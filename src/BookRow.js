@@ -3,7 +3,7 @@ import React, { Component } from "react";
 class BookRow extends Component {
   render() {
     const book = this.props.book;
-    const author = this.props.author;
+
     const authorsList = book.authors.map(author => <p>{author.name}</p>);
     return (
       <tr>

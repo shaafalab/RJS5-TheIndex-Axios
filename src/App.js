@@ -5,7 +5,7 @@ import Sidebar from "./Sidebar";
 import AuthorsList from "./AuthorsList";
 import AuthorDetail from "./AuthorDetail";
 import axios from "axios";
-
+import Loading from "./Loading";
 class App extends Component {
   state = {
     currentAuthor: null,
@@ -75,7 +75,7 @@ class App extends Component {
   };
 
   render() {
-    if (this.state.loading) return <div>loading...</div>;
+    if (this.state.loading) return <Loading />;
     return (
       <div id="app" className="container-fluid">
         <div className="row">
