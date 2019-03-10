@@ -1,25 +1,58 @@
 import React, { Component } from "react";
 
-import authors from "./data.js";
-
 // Components
 import Sidebar from "./Sidebar";
 import AuthorsList from "./AuthorsList";
 import AuthorDetail from "./AuthorDetail";
+import axios from "axios";
 
 class App extends Component {
   state = {
     currentAuthor: null,
-    filteredAuthors: authors
+    filteredAuthors: [],
+    authors: [],
+    loading: true
   };
 
-  selectAuthor = author => this.setState({ currentAuthor: author });
+  componentDidMount = () => {
+    this.getapi();
+  };
+
+  selectAuthor = async author => {
+    try {
+      const api = await axios.get(
+        `https://the-index-api.herokuapp.com/api/authors/${author.id}`
+      );
+      const authorFromAPI = api.data;
+      this.setState({ currentAuthor: authorFromAPI, loading: false });
+    } catch (error) {
+      console.error("somthing in books went worng");
+      console.error(error);
+    }
+  };
 
   unselectAuthor = () => this.setState({ currentAuthor: null });
 
+  getapi = async () => {
+    try {
+      const api = await axios.get(
+        "https://the-index-api.herokuapp.com/api/authors/"
+      );
+      const authors = api.data;
+      this.setState({
+        authors: authors,
+        filteredAuthors: authors,
+        loading: false
+      });
+    } catch (error) {
+      console.error("somthing went worng");
+      console.error(error);
+    }
+  };
+
   filterAuthors = query => {
     query = query.toLowerCase();
-    let filteredAuthors = authors.filter(author => {
+    let filteredAuthors = this.state.authors.filter(author => {
       return `${author.first_name} ${author.last_name}`
         .toLowerCase()
         .includes(query);
@@ -42,6 +75,7 @@ class App extends Component {
   };
 
   render() {
+    if (this.state.loading) return <div>loading...</div>;
     return (
       <div id="app" className="container-fluid">
         <div className="row">
